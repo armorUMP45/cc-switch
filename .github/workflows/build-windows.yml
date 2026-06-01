@@ -18,6 +18,12 @@ jobs:
         with:
           version: 10.12.3
       - run: pnpm install --frozen-lockfile
+      - name: Remove updater config to skip signing
+        shell: pwsh
+        run: |
+          $json = Get-Content src-tauri\tauri.conf.json -Raw | ConvertFrom-Json
+          $json.PSObject.Properties.Remove('updater')
+          $json | ConvertTo-Json -Depth 10 | Set-Content src-tauri\tauri.conf.json
       - run: pnpm tauri build
       - uses: actions/upload-artifact@v7
         with:
